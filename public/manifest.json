@@ -1,0 +1,9 @@
+{
+  "manifest_version": 1,
+  "name": "StartPage",
+  "version": "1.0.0",
+  "description": "Nueva pestaña minimalista y personalizable sin anuncios.",
+  "chrome_url_overrides": {
+    "newtab": "index.html"
+  }
+}
