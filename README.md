@@ -1,16 +1,30 @@
-# React + Vite
+# StartPage
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![StartPage Hero](./public/images/hero-v0.1.0-beta.png)
 
-Currently, two official plugins are available:
+> A minimalist, ad-free, and customizable new tab page for your browser.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## 🚀 Current Status
+**Work in Progress (Beta)**. The core UI is built, the real-time clock is active, and the settings modals are functional. We are currently finalizing the core logic. A downloadable ZIP release to easily add this to your browser extensions will be available soon!
 
-## React Compiler
+## ✨ Features
+- **Minimalist Design:** A clean, cover-style dashboard to keep you focused.
+- **Quick Access Hub:** Navigate to your favorite sites instantly. No search bar, just pure speed.
+- **Organized Profiles:** Group your links (e.g., Work, Education, Entertainment) using beautiful **Lucide Icons**.
+- **Real-Time Clock:** A precise 24-hour format clock displaying live seconds.
+- **Interactive Modals:** Clean, responsive dialog boxes for configuration and setup.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🗺️ Roadmap (Coming Soon)
+- Drag and drop functionality to easily reorder your shortcuts.
+- 12-hour clock format option.
+- Future customization features.
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
+- **React**
+- **Vite**
+- **Tailwind CSS**
+- **pnpm**
+- **Lucide Icons**
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## 📦 Installation
+*The packaged extension (ZIP) and installation instructions for Developer Mode will be added in a future release once the core logic is 100% complete.*
