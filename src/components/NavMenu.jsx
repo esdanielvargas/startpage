@@ -1,7 +1,7 @@
 import { Plus, Settings2 } from "lucide-react";
 
 export default function NavMenu({
-  groups,
+  groups = [],
   max_groups,
   selectedGroup,
   setSelectedGroup,
@@ -10,7 +10,7 @@ export default function NavMenu({
   return (
     <div className="w-full md:max-w-200 lg:max-w-300 px-4 mx-auto flex items-center justify-center">
       <nav className="w-auto md:max-w-200 p-1 flex items-center justify-start gap-px overflow-hidden overflow-x-auto rounded-full bg-neutral-950/50 backdrop-blur-sm">
-        {groups.slice(0, max_groups).map((category, index) => (
+        {groups?.length > 1 && groups?.slice(0, max_groups).map((category, index) => (
           <button
             key={index}
             type="button"
@@ -32,7 +32,7 @@ export default function NavMenu({
           onClick={() => setShowNewGroup(true)}
           className="size-9 min-w-9 flex items-center justify-center gap-1.5 rounded-full bg-neutral-800/50 hover:bg-neutral-900/50 text-white cursor-pointer transition-all duration-300 ease-out"
         >
-          {groups.length > max_groups ? (
+          {groups?.length > max_groups ? (
             <Settings2 size={18} strokeWidth={1.5} />
           ) : (
             <Plus size={20} strokeWidth={1.5} />
