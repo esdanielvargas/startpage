@@ -2,7 +2,7 @@ import { Plus } from "lucide-react";
 import { formatUrl, getFavicon } from "../utils";
 import { useState, useEffect } from "react";
 
-export default function LinkGrid({ size, links, selectedGroup, setShowNewLink }) {
+export default function LinkGrid({ size, links = [], selectedGroup, setShowNewLink }) {
   const [cols, setCols] = useState(12);
 
   useEffect(() => {
@@ -28,7 +28,7 @@ export default function LinkGrid({ size, links, selectedGroup, setShowNewLink })
     setCurrentPage(0);
   }
 
-  const filteredLinks = links.filter((link) =>
+  const filteredLinks = (links || []).filter((link) =>
     selectedGroup ? link.group === selectedGroup : true
   );
 
