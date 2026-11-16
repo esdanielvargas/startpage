@@ -9,10 +9,15 @@ export default function LinkGrid({
   links = [],
   selectedGroup,
   setShowNewLink,
-  setLinkToEdit, // Nueva prop para pasar el enlace a editar al modal
+  setLinkToEdit,
 }) {
   const [cols, setCols] = useState(12);
   const [openMenuId, setOpenMenuId] = useState(null);
+
+  // Estados para Drag & Drop
+  const [draggedId, setDraggedId] = useState(null);
+  const [dragOverId, setDragOverId] = useState(null);
+  const [dropPosition, setDropPosition] = useState(null); // "left" | "right"
 
   useEffect(() => {
     const updateCols = () => {
@@ -26,7 +31,6 @@ export default function LinkGrid({
     return () => window.removeEventListener("resize", updateCols);
   }, []);
 
-  // Cierra el menú de tres puntos si haces clic fuera
   useEffect(() => {
     const closeMenu = () => setOpenMenuId(null);
     window.addEventListener("click", closeMenu);
@@ -44,7 +48,6 @@ export default function LinkGrid({
     setCurrentPage(0);
   }
 
-  // Compatibilidad con groupId o group
   const filteredLinks = (links || []).filter((link) => {
     const linkGroup = link.groupId ?? link.group;
     return selectedGroup ? linkGroup === selectedGroup : true;
@@ -85,6 +88,68 @@ export default function LinkGrid({
     setShowNewLink(true);
   };
 
+  // --- LÓGICA DE ARRASTRE (DRAG & DROP) ---
+  const handleDragStart = (e, id) => {
+    setDraggedId(id);
+    setOpenMenuId(null);
+    e.dataTransfer.effectAllowed = "move";
+    e.dataTransfer.setData("text/plain", id);
+  };
+
+  const handleDragOver = (e, id) => {
+    e.preventDefault();
+    if (!draggedId || draggedId === id) return;
+
+    const rect = e.currentTarget.getBoundingClientRect();
+    const midX = rect.left + rect.width / 2;
+    const position = e.clientX < midX ? "left" : "right";
+
+    setDragOverId(id);
+    setDropPosition(position);
+  };
+
+  const handleDrop = (e, targetId) => {
+    e.preventDefault();
+    if (!draggedId || draggedId === targetId) {
+      resetDragState();
+      return;
+    }
+
+    const existingData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    const globalLinks = [...(existingData.links || links)];
+
+    const fromIndex = globalLinks.findIndex((l) => l.id === draggedId);
+    const toIndex = globalLinks.findIndex((l) => l.id === targetId);
+
+    if (fromIndex === -1 || toIndex === -1) {
+      resetDragState();
+      return;
+    }
+
+    const [movedItem] = globalLinks.splice(fromIndex, 1);
+
+    // Recalculamos el índice destino tras extraer el elemento movido
+    const updatedTargetIndex = globalLinks.findIndex((l) => l.id === targetId);
+    const insertIndex =
+      dropPosition === "right" ? updatedTargetIndex + 1 : updatedTargetIndex;
+
+    globalLinks.splice(insertIndex, 0, movedItem);
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...existingData, links: globalLinks })
+    );
+    window.dispatchEvent(new Event("storage"));
+
+    resetDragState();
+  };
+
+  const resetDragState = () => {
+    setDraggedId(null);
+    setDragOverId(null);
+    setDropPosition(null);
+  };
+
   return (
     <div className="w-full md:max-w-200 lg:max-w-300 mx-auto flex flex-col items-center justify-center gap-3">
       <div className="w-full px-4 grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-1">
@@ -110,24 +175,42 @@ export default function LinkGrid({
           }
 
           const isMenuOpen = openMenuId === item.id;
+          const isDragging = draggedId === item.id;
+          const isOverLeft = dragOverId === item.id && dropPosition === "left";
+          const isOverRight =
+            dragOverId === item.id && dropPosition === "right";
 
           return (
-            <div key={item.id || index} className="relative group">
+            <div
+              key={item.id || index}
+              draggable
+              onDragStart={(e) => handleDragStart(e, item.id)}
+              onDragOver={(e) => handleDragOver(e, item.id)}
+              onDrop={(e) => handleDrop(e, item.id)}
+              onDragEnd={resetDragState}
+              className={`relative group rounded-xl transition-all duration-150 ${
+                isDragging ? "opacity-40 scale-95" : ""
+              } ${isOverLeft ? "border-l-2 border-sky-500" : ""} ${
+                isOverRight ? "border-r-2 border-sky-500" : ""
+              }`}
+            >
               <a
                 href={formatUrl(item.url)}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-full h-full min-w-20 min-h-20 py-5 flex flex-col items-center justify-center gap-1.5 rounded-xl bg-neutral-950/50 hover:bg-neutral-900/50 backdrop-blur-sm text-white cursor-pointer transition-colors"
+                draggable={false}
+                className="w-full h-full min-w-20 min-h-20 py-5 flex flex-col items-center justify-center gap-1.5 rounded-xl bg-neutral-950/50 hover:bg-neutral-900/50 backdrop-blur-sm text-white cursor-pointer transition-colors select-none"
                 title={item.title}
               >
                 <img
                   src={getFavicon(item.url)}
                   width={32}
                   height={32}
+                  draggable={false}
                   loading="eager"
                   fetchPriority="high"
                   alt={`Ir a «${item.title}»`}
-                  className="w-8 h-8 rounded-md"
+                  className="w-8 h-8 rounded-md pointer-events-none"
                 />
                 {item.title && (
                   <span className="text-xs truncate w-18 text-center">
@@ -136,7 +219,7 @@ export default function LinkGrid({
                 )}
               </a>
 
-              {/* Botón de 3 puntos (visible al hacer hover o si el menú está abierto) */}
+              {/* Botón de 3 puntos */}
               <button
                 type="button"
                 onClick={(e) => {
@@ -145,7 +228,9 @@ export default function LinkGrid({
                   setOpenMenuId(isMenuOpen ? null : item.id);
                 }}
                 className={`absolute top-1.5 right-1.5 size-6 flex items-center justify-center rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800/90 transition-opacity cursor-pointer ${
-                  isMenuOpen ? "opacity-100 bg-neutral-800/90 text-white" : "opacity-0 group-hover:opacity-100"
+                  isMenuOpen
+                    ? "opacity-100 bg-neutral-800/90 text-white"
+                    : "opacity-0 group-hover:opacity-100"
                 }`}
                 title="Opciones"
               >
