@@ -1,6 +1,7 @@
 import { Edit, Menu, Trash, X } from "lucide-react";
 import { useState } from "react";
 import { iconsList } from "../constants";
+import Button from "./Button";
 
 const STORAGE_KEY = "startpage";
 
@@ -146,8 +147,8 @@ export default function ManageGroups({
                   isDragging
                     ? "opacity-40 bg-neutral-800"
                     : "hover:bg-neutral-800/75"
-                } ${isOverBefore ? "border-t-2 border-blue-500" : ""} ${
-                  isOverAfter ? "border-b-2 border-blue-500" : ""
+                } ${isOverBefore ? "border-t-2 border-sky-500" : ""} ${
+                  isOverAfter ? "border-b-2 border-sky-500" : ""
                 }`}
               >
                 <div className="w-full flex items-center gap-2 overflow-hidden">
@@ -193,17 +194,16 @@ export default function ManageGroups({
             );
           })}
 
-          <button
-            type="button"
+          <Button
+            full
             onClick={() => {
               if (setGroupToEdit) setGroupToEdit(null); // Asegura que abra en modo "crear"
               setShowManageGroup(false);
               setShowNewGroup(true);
             }}
-            className="w-full h-10 flex items-center justify-center rounded-lg bg-neutral-800/75 hover:bg-neutral-800 transition-colors cursor-pointer mt-2"
           >
-            <span className="text-xs font-medium">Agregar nuevo grupo</span>
-          </button>
+            Agregar nuevo grupo
+          </Button>
         </div>
       </div>
     </div>
