@@ -1,6 +1,8 @@
 import { X } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { formatUrl, generateUniqueId } from "../utils";
+import Button from "./Button";
+import FormField from "./FormField";
 
 const STORAGE_KEY = "startpage";
 
@@ -8,18 +10,33 @@ export default function NewLinkModal({
   showNewLink,
   setShowNewLink,
   selectedGroup,
+  groups = [],
+  linkToEdit,
+  setLinkToEdit,
 }) {
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors },
-  } = useForm();
+  } = useForm({
+    defaultValues: {
+      title: linkToEdit?.title || "",
+      url: linkToEdit?.url || "",
+      group:
+        linkToEdit?.groupId ??
+        linkToEdit?.group ??
+        selectedGroup ??
+        groups[0]?.id ??
+        "",
+    },
+  });
 
   if (!showNewLink) return null;
 
   const handleClose = () => {
     reset();
+    if (setLinkToEdit) setLinkToEdit(null);
     setShowNewLink(false);
   };
 
@@ -28,22 +45,32 @@ export default function NewLinkModal({
     const existingData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
     const currentLinks = existingData.links || [];
 
-    // Construimos el nuevo objeto de enlace
-    const newLink = {
-      id: generateUniqueId(),
-      title: data.title.trim(),
-      url: formatUrl(data.url),
-      group: selectedGroup || existingData.groups?.[0]?.id || null,
-    };
-
-    // Actualizamos el objeto general de "startpage"
-    const updatedState = {
-      ...existingData,
-      links: [...currentLinks, newLink],
-    };
+    const updatedLinks = linkToEdit
+      ? currentLinks.map((item) =>
+          item.id === linkToEdit.id
+            ? {
+                ...item,
+                title: data.title.trim(),
+                url: formatUrl(data.url),
+                group: data.group || null,
+              }
+            : item,
+        )
+      : [
+          ...currentLinks,
+          {
+            id: generateUniqueId(),
+            title: data.title.trim(),
+            url: formatUrl(data.url),
+            group: data.group || selectedGroup || null,
+          },
+        ];
 
     // Guardamos y disparamos el evento para que la interfaz se entere
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedState));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...existingData, links: updatedLinks }),
+    );
     window.dispatchEvent(new Event("storage"));
 
     // Limpiamos y cerramos el modal
@@ -74,42 +101,21 @@ export default function NewLinkModal({
         </div>
 
         <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4">
-          <div className="w-full flex flex-col gap-2">
-            <label className="font-medium text-sm">Nombre</label>
-            <input
-              type="text"
-              placeholder="Example"
-              className="w-full h-10 px-3 rounded-md bg-neutral-950/95 border border-neutral-800 text-sm text-white focus:outline-none focus:border-neutral-600 transition-colors"
-              {...register("title", { required: "El nombre es obligatorio" })}
-            />
-            {errors.title && (
-              <span className="text-xs text-red-400">
-                {errors.title.message}
-              </span>
-            )}
-          </div>
-
-          <div className="w-full flex flex-col gap-2">
-            <label className="font-medium text-sm">Enlace</label>
-            <input
-              type="text"
-              placeholder="https://example.com"
-              className="w-full h-10 px-3 rounded-md bg-neutral-950/95 border border-neutral-800 text-sm text-white focus:outline-none focus:border-neutral-600 transition-colors"
-              {...register("url", { required: "La URL es obligatoria" })}
-            />
-            {errors.link && (
-              <span className="text-xs text-red-400">
-                {errors.link.message}
-              </span>
-            )}
-          </div>
-
-          <button
-            type="submit"
-            className="w-full h-10 px-4 rounded-md bg-neutral-50 hover:bg-neutral-300 font-medium text-sm text-black transition-colors cursor-pointer"
-          >
-            Añadir enlace
-          </button>
+          <FormField
+            label="Titulo del sitio web"
+            placeholder="Ej. GitHub"
+            {...register("title", { required: "El nombre es obligatorio" })}
+            error={errors.title && errors.title.message}
+          />
+          <FormField
+            label="Enlace del sitio web"
+            placeholder="Ej. https://github.com"
+            {...register("url", { required: "La URL es obligatoria" })}
+            error={errors.url && errors.url.message}
+          />
+          <Button type="submit" full>
+            {linkToEdit ? "Guardar cambios" : "Añadir enlace"}
+          </Button>
         </form>
       </div>
     </div>
