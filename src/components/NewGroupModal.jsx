@@ -1,13 +1,9 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 import { iconsList } from "../constants";
+import { generateUniqueId } from "../utils";
 
 const STORAGE_KEY = "startpage";
-
-// Función auxiliar para crear IDs únicos aleatorios (ej. "a1b2c3d4")
-const generateUniqueId = () => {
-  return Math.random().toString(36).substring(2, 10);
-};
 
 export default function NewGroupModal({ showNewGroup, setShowNewGroup }) {
   // Estados para capturar los datos del formulario
