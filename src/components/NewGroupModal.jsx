@@ -5,22 +5,25 @@ import { generateUniqueId } from "../utils";
 
 const STORAGE_KEY = "startpage";
 
-export default function NewGroupModal({ showNewGroup, setShowNewGroup }) {
-  // Estados para capturar los datos del formulario
-  const [selectedIcon, setSelectedIcon] = useState("");
-  const [groupName, setGroupName] = useState("");
+export default function NewGroupModal({
+  showNewGroup,
+  setShowNewGroup,
+  groupToEdit,
+  setGroupToEdit,
+}) {
+  const [selectedIcon, setSelectedIcon] = useState(groupToEdit?.iconName || "");
+  const [groupName, setGroupName] = useState(groupToEdit?.title || "");
 
   if (!showNewGroup) return null;
 
-  const handleOverlayClick = () => {
-    // Limpiamos los estados al cerrar el modal
+  const handleClose = () => {
     setSelectedIcon("");
     setGroupName("");
+    if (setGroupToEdit) setGroupToEdit(null);
     setShowNewGroup(false);
   };
 
-  const handleAddGroup = () => {
-    // Validaciones básicas
+  const handleSaveGroup = () => {
     if (!groupName.trim()) {
       alert("Por favor, ingresa un nombre para el grupo.");
       return;
@@ -30,34 +33,36 @@ export default function NewGroupModal({ showNewGroup, setShowNewGroup }) {
       return;
     }
 
-    // Obtenemos el estado actual del localStorage
     const existingData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
     const currentGroups = existingData.groups || [];
 
-    // Construimos el nuevo objeto de grupo
-    const newGroup = {
-      id: generateUniqueId(),
-      title: groupName.trim(),
-      iconName: selectedIcon,
-    };
+    const updatedGroups = groupToEdit
+      ? currentGroups.map((group) =>
+          group.id === groupToEdit.id
+            ? { ...group, title: groupName.trim(), iconName: selectedIcon }
+            : group
+        )
+      : [
+          ...currentGroups,
+          {
+            id: generateUniqueId(),
+            title: groupName.trim(),
+            iconName: selectedIcon,
+          },
+        ];
 
-    // Actualizamos los datos
-    const updatedState = {
-      ...existingData,
-      groups: [...currentGroups, newGroup],
-    };
-
-    // Guardamos y avisamos a la app
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedState));
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...existingData, groups: updatedGroups })
+    );
     window.dispatchEvent(new Event("storage"));
 
-    // Limpiamos y cerramos
-    handleOverlayClick();
+    handleClose();
   };
 
   return (
     <div
-      onClick={handleOverlayClick}
+      onClick={handleClose}
       className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs"
     >
       {/* caja */}
@@ -68,11 +73,13 @@ export default function NewGroupModal({ showNewGroup, setShowNewGroup }) {
         {/* header */}
         <div className="w-full p-2.5 flex items-center justify-between border-b border-neutral-800">
           <div className="w-full pl-2 flex items-center">
-            <span className="font-bold text-base">Añadir grupo</span>
+            <span className="font-bold text-base">
+              {groupToEdit ? "Editar grupo" : "Añadir grupo"}
+            </span>
           </div>
           <button
             type="button"
-            onClick={handleOverlayClick}
+            onClick={handleClose}
             className="size-8 min-w-8 flex items-center justify-center rounded-full text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
           >
             <X size={20} strokeWidth={1.5} />
@@ -121,10 +128,10 @@ export default function NewGroupModal({ showNewGroup, setShowNewGroup }) {
 
           <button
             type="button"
-            onClick={handleAddGroup}
+            onClick={handleSaveGroup}
             className="w-full h-10 px-4 rounded-md bg-neutral-50 hover:bg-neutral-300 font-medium text-sm text-black transition-colors cursor-pointer mt-4"
           >
-            Añadir grupo
+            {groupToEdit ? "Guardar cambios" : "Añadir grupo"}
           </button>
         </div>
       </div>
