@@ -26,7 +26,7 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
   const [activeTab, setActiveTab] = useState("background");
 
   const { register, watch, handleSubmit, reset, setValue } = useForm({
-    defaultValues: getInitialSettings()
+    defaultValues: getInitialSettings(),
   });
 
   const imageUrl = watch("background.image");
@@ -67,7 +67,10 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs"
-      onClick={() => setShowSettings(false)}
+      onClick={() => {
+        setActiveTab("background");
+        setShowSettings(false);
+      }}
     >
       {/* box */}
       <div
@@ -85,7 +88,6 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
                 key={index}
                 type="button"
                 onClick={() => setActiveTab(tab.id)}
-                // className="w-full px-3 h-10 cursor-pointer flex items-center justify-start gap-2.5 rounded-lg transition-all duration-300 ease-out hover:bg-neutral-200/50 dark:hover:bg-neutral-800/50 active:bg-neutral-200/75 dark:active:bg-neutral-800/75"
                 className={`w-full px-3 h-10 cursor-pointer flex items-center justify-start gap-2.5 rounded-lg transition-all duration-300 ease-out 
                   ${
                     activeTab === tab.id
@@ -110,7 +112,10 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
             </span>
             <button
               type="button"
-              onClick={() => setShowSettings(false)}
+              onClick={() => {
+                setActiveTab("background");
+                setShowSettings(false);
+              }}
               className="size-8 -mr-1.5 flex items-center justify-center rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
             >
               <X size={20} strokeWidth={1.5} />
