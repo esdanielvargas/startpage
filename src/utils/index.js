@@ -1,3 +1,3 @@
-import { formatUrl, getFavicon } from "./helpers";
+import { formatUrl, getFavicon, generateUniqueId } from "./helpers";
 
-export { formatUrl, getFavicon };
+export { formatUrl, getFavicon, generateUniqueId };
