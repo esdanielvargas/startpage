@@ -56,38 +56,22 @@ import {
   WalletMinimal,
   X,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { useClock } from "../hooks";
+import { formatUrl, getFavicon } from "../utils";
 
 export default function HubLayout() {
   const BackgroundImage =
     "https://plus.unsplash.com/premium_photo-1701520447608-3ff1bd3314f3?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=NHwxMjA3fDA%3D";
 
+  const { formattedTime, formattedDate } = useClock();
+
   const [relojGrande, setRelojGrande] = useState(true);
+
   const [showSettings, setShowSettings] = useState(false);
   const [showNewGroupModal, setShowNewGroupModal] = useState(false);
   const [showNewLinkModal, setShowNewLinkModal] = useState(false);
 
-  // Lógica para que el reloj funcione en tiempo real
-  const [time, setTime] = useState(new Date());
-
-  useEffect(() => {
-    const timer = setInterval(() => setTime(new Date()), 1000);
-    return () => clearInterval(timer);
-  }, []);
-
-  const formattedTime = time.toLocaleTimeString("es-ES", {
-    hour: "2-digit",
-    minute: "2-digit",
-    second: "2-digit",
-  });
-
-  const formattedDate = time.toLocaleDateString("es-ES", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric",
-  });
-  
   const icons = [
     { id: "briefcase-business", Icon: BriefcaseBusiness, title: "Maletín" },
     { id: "book-text", Icon: BookText, title: "Libro de texto" },
@@ -95,7 +79,11 @@ export default function HubLayout() {
     { id: "newspaper", Icon: Newspaper, title: "Periódico" },
     { id: "scroll-text", Icon: ScrollText, title: "Pergamino" },
     { id: "building", Icon: Building, title: "Edificio" },
-    { id: "building-complex", Icon: BuildingComplex, title: "Complejo de Edificios", },
+    {
+      id: "building-complex",
+      Icon: BuildingComplex,
+      title: "Complejo de Edificios",
+    },
     { id: "house", Icon: House, title: "Casa" },
     { id: "house-heart", Icon: HouseHeart, title: "Casa con Corazón" },
     { id: "store", Icon: Store, title: "Tienda" },
@@ -151,41 +139,40 @@ export default function HubLayout() {
   ];
 
   const links = [
+    { name: "Portafolio", url: "https://danielvargas.dev", group: "Trabajo" },
     { name: "Google", url: "https://google.com", group: "Trabajo" },
-    { name: "YouTube", url: "https://youtube.com", group: "Ocio" },
+    { name: "YouTube", url: "https://youtube.com", group: "Entretenimiento" },
     { name: "GitHub", url: "https://github.com", group: "Trabajo" },
     {
       name: "Stack Overflow",
       url: "https://stackoverflow.com",
       group: "Educación",
     },
-    { name: "Reddit", url: "https://reddit.com", group: "Ocio" },
-    { name: "Twitter", url: "https://twitter.com", group: "Ocio" },
-    { name: "Facebook", url: "https://facebook.com", group: "Ocio" },
-    { name: "Instagram", url: "https://instagram.com", group: "Ocio" },
+    { name: "Reddit", url: "https://reddit.com", group: "Entretenimiento" },
+    {
+      name: "Instagram",
+      url: "https://instagram.com",
+      group: "Entretenimiento",
+    },
+    { name: "Twitter", url: "https://twitter.com", group: "Entretenimiento" },
+    { name: "Facebook", url: "https://facebook.com", group: "Entretenimiento" },
     { name: "LinkedIn", url: "https://linkedin.com", group: "Trabajo" },
     { name: "Wikipedia", url: "https://wikipedia.org", group: "Educación" },
     { name: "Spotify", url: "https://spotify.com", group: "Música" },
-    { name: "Netflix", url: "https://netflix.com", group: "Ocio" },
+    { name: "Netflix", url: "https://netflix.com", group: "Entretenimiento" },
+    { name: "Amazon", url: "https://amazon.com", group: "Entretenimiento" },
+    { name: "Twitch", url: "https://twitch.tv", group: "Entretenimiento" },
+    { name: "Discord", url: "https://discord.com", group: "Entretenimiento" },
+    { name: "Figma", url: "https://figma.com", group: "Diseño" },
+    { name: "Dribbble", url: "https://dribbble.com", group: "Diseño" },
+    { name: "Behance", url: "https://behance.net", group: "Diseño" },
+    { name: "Medium", url: "https://medium.com", group: "Educación" },
+    { name: "DANO", url: "https://danielospid.com", group: "Entretenimiento" },
   ];
 
   const max_group = 5;
 
-  function formatUrl(url) {
-    let cleaned = url.trim();
-    if (!/^https?:\/\//i.test(cleaned)) cleaned = "https://" + cleaned;
-    return cleaned;
-  }
-
-  function getFavicon(url) {
-    try {
-      const host = new URL(formatUrl(url)).hostname;
-      return `https://www.google.com/s2/favicons?domain=${host}&sz=64`;
-    } catch (error) {
-      console.error("Error al obtener el favicon:", error);
-      return "";
-    }
-  }
+  const [selectedGroup, setSelectedGroup] = useState("");
 
   return (
     <>
@@ -264,7 +251,8 @@ export default function HubLayout() {
                   <button
                     key={index}
                     type="button"
-                    className="h-9 px-3.5 pr-4 flex items-center justify-center gap-1.5 rounded-full hover:bg-neutral-400/50 hover:dark:bg-neutral-800/50 text-white cursor-pointer transition-all duration-300 ease-out"
+                    onClick={() => setSelectedGroup(category.name)}
+                    className={`h-9 px-3.5 pr-4 flex items-center justify-center gap-1.5 rounded-full ${selectedGroup === category.name ? "bg-neutral-800/75" : "hover:bg-neutral-400/50 hover:dark:bg-neutral-800/50"} text-white cursor-pointer transition-all duration-300 ease-out`}
                     title={category.name}
                   >
                     {category.Icon && <category.Icon size={16} />}
@@ -293,27 +281,31 @@ export default function HubLayout() {
             {/* enlaces > accesos cortos */}
             <div className="w-full md:max-w-200 lg:max-w-300 mx-auto flex items-center justify-center">
               <nav className="w-full px-4 grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 grid-rows-4 gap-1">
-                {links.map((link, index) => (
-                  <a
-                    key={index} // Agregado el key requerido
-                    href={formatUrl(link?.url)}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="w-full h-full min-w-20 min-h-20 py-5 flex flex-col items-center justify-center gap-1.5 rounded-xl bg-neutral-950/50 hover:bg-neutral-900/50 backdrop-blur-sm text-white cursor-pointer transition-colors"
-                    title={link.name}
-                  >
-                    <img
-                      src={getFavicon(link?.url)}
-                      alt={link.name}
-                      className="w-8 h-8 rounded-md"
-                    />
-                    {link.name && (
-                      <span className="text-xs truncate w-16 text-center">
-                        {link.name}
-                      </span>
-                    )}
-                  </a>
-                ))}
+                {links
+                  .filter((link) =>
+                    selectedGroup ? link.group === selectedGroup : true,
+                  )
+                  .map((link, index) => (
+                    <a
+                      key={index} // Agregado el key requerido
+                      href={formatUrl(link?.url)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-full h-full min-w-20 min-h-20 py-5 flex flex-col items-center justify-center gap-1.5 rounded-xl bg-neutral-950/50 hover:bg-neutral-900/50 backdrop-blur-sm text-white cursor-pointer transition-colors"
+                      title={link.name}
+                    >
+                      <img
+                        src={getFavicon(link?.url)}
+                        alt={link.name}
+                        className="w-8 h-8 rounded-md"
+                      />
+                      {link.name && (
+                        <span className="text-xs truncate w-16 text-center">
+                          {link.name}
+                        </span>
+                      )}
+                    </a>
+                  ))}
                 <button
                   type="button"
                   onClick={() => setShowNewLinkModal(true)}
