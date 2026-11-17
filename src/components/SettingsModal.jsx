@@ -74,6 +74,33 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
     return () => subscription.unsubscribe();
   }, [watch]);
 
+  const handleLocalImage = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const MAX_WIDTH = 1920;
+        const scale = img.width > MAX_WIDTH ? MAX_WIDTH / img.width : 1;
+
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+        // Convierte a JPEG comprimido al 85% (pesa ~200-400 KB)
+        const compressedBase64 = canvas.toDataURL("image/jpeg", 0.85);
+        setValue("background.image", compressedBase64, { shouldDirty: true });
+      };
+      img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+  };
+
   if (!showSettings) return null;
 
   const tabs = [
@@ -170,6 +197,18 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
                   />
                 )}
 
+                <div className="flex flex-col gap-1.5">
+                  <label className="text-sm font-medium">
+                    O subir desde tu equipo
+                  </label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleLocalImage}
+                    className="text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-neutral-800 file:text-white hover:file:bg-neutral-700 cursor-pointer"
+                  />
+                </div>
+
                 {/* Selector de color sólido */}
                 <div className="flex flex-col gap-2 pt-4 border-t border-neutral-200 dark:border-neutral-800">
                   <label className="text-sm font-medium">
@@ -231,7 +270,7 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
                 />
                 <FormField
                   label="Tamaño del reloj"
-                  caption="Elige tu tamaño del reloj preferido."
+                  caption="Elige el tamaño del reloj preferido."
                   select
                   options={[
                     { value: "small", label: "Pequeño" },
@@ -241,7 +280,7 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
                 />
                 <FormField
                   label="Formato del reloj"
-                  caption="Elige tu formato del reloj preferido."
+                  caption="Elige el formato del reloj preferido."
                   select
                   options={[
                     { value: "h12", label: "Reloj de 12 horas" },
