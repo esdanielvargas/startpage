@@ -1,9 +1,10 @@
 import { useClock } from "../hooks";
 
-export default function ClockView({ seconds, size, format }) {
+export default function ClockView({ language, seconds, size, format }) {
   const { formattedTime, formattedDate } = useClock({
     format: format,
     showSeconds: seconds,
+    language: language,
   });
 
   return (
