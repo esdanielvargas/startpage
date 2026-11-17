@@ -1,4 +1,4 @@
-import { X } from "lucide-react";
+import { ChevronLeft, X } from "lucide-react";
 import { useState } from "react";
 import { iconsList } from "../constants";
 import { generateUniqueId } from "../utils";
@@ -8,6 +8,7 @@ const STORAGE_KEY = "startpage";
 export default function NewGroupModal({
   showNewGroup,
   setShowNewGroup,
+  setShowManageGroup,
   groupToEdit,
   setGroupToEdit,
 }) {
@@ -15,6 +16,11 @@ export default function NewGroupModal({
   const [groupName, setGroupName] = useState(groupToEdit?.title || "");
 
   if (!showNewGroup) return null;
+
+  const handleBack = () => {
+    setShowNewGroup(false);
+    setShowManageGroup(true);
+  };
 
   const handleClose = () => {
     setSelectedIcon("");
@@ -40,7 +46,7 @@ export default function NewGroupModal({
       ? currentGroups.map((group) =>
           group.id === groupToEdit.id
             ? { ...group, title: groupName.trim(), iconName: selectedIcon }
-            : group
+            : group,
         )
       : [
           ...currentGroups,
@@ -53,7 +59,7 @@ export default function NewGroupModal({
 
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ ...existingData, groups: updatedGroups })
+      JSON.stringify({ ...existingData, groups: updatedGroups }),
     );
     window.dispatchEvent(new Event("storage"));
 
@@ -61,9 +67,7 @@ export default function NewGroupModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs">
       {/* caja */}
       <div
         onClick={(e) => e.stopPropagation()}
@@ -71,7 +75,14 @@ export default function NewGroupModal({
       >
         {/* header */}
         <div className="w-full p-2.5 flex items-center justify-between border-b border-neutral-800">
-          <div className="w-full pl-2 flex items-center">
+          <button
+            type="button"
+            onClick={handleBack}
+            className="size-8 min-w-8 flex items-center justify-center rounded-full text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
+          >
+            <ChevronLeft size={20} strokeWidth={1.5} />
+          </button>
+          <div className="w-full flex items-center justify-center">
             <span className="font-bold text-base">
               {groupToEdit ? "Editar grupo" : "Añadir grupo"}
             </span>
@@ -130,7 +141,7 @@ export default function NewGroupModal({
             onClick={handleSaveGroup}
             className="w-full h-10 px-4 rounded-md bg-neutral-50 hover:bg-neutral-300 font-medium text-sm text-black transition-colors cursor-pointer"
           >
-            {groupToEdit ? "Guardar cambios" : "Añadir grupo"}
+            {groupToEdit ? "Guardar cambios" : "Agregar grupo"}
           </button>
         </div>
       </div>
