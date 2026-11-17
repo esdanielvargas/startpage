@@ -175,6 +175,7 @@ export default function StartPage() {
         key={groupToEdit?.id || "new-group"}
         showNewGroup={showNewGroup}
         setShowNewGroup={setShowNewGroup}
+        setShowManageGroup={setShowManageGroup}
         groupToEdit={groupToEdit}
         setGroupToEdit={setGroupToEdit}
       />
