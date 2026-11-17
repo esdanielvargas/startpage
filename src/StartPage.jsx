@@ -68,15 +68,15 @@ export default function StartPage() {
   const [linkToEdit, setLinkToEdit] = useState(null);
 
   // En lugar de confiar ciegamente en selectedGroup si se borró o creó el primero:
-  const activeGroup = appState.groups?.some((g) => g.id === selectedGroup)
+  const activeGroup = appState?.groups?.some((g) => g.id === selectedGroup)
     ? selectedGroup
-    : appState.groups?.[0]?.id;
+    : appState?.groups?.[0]?.id;
 
   return (
     <>
       <Background
-        image={appState.background.image}
-        color={appState.background.color}
+        image={appState?.background?.image}
+        color={appState?.background?.color}
       />
 
       {/* Contenido principal */}
@@ -104,23 +104,23 @@ export default function StartPage() {
         {/* main */}
         <div
           className={`w-full h-full flex flex-col items-center ${
-            appState.clock.size === "large"
+            appState?.clock?.size === "large"
               ? "justify-center"
               : "justify-start mt-10-"
           } gap-8`}
         >
           {/* Reloj Grande */}
           <ClockView
-            seconds={appState.clock.seconds}
-            size={appState.clock.size}
-            format={appState.clock.format}
+            seconds={appState?.clock?.seconds}
+            size={appState?.clock?.size}
+            format={appState?.clock?.format}
           />
 
           {/* menu + grid de enlaces */}
           <div className="w-full flex flex-col items-center gap-4">
             {/* menu de navegacion de categorias */}
             <NavMenu
-              groups={appState.groups}
+              groups={appState?.groups}
               max_groups={max_groups}
               selectedGroup={activeGroup}
               setSelectedGroup={setSelectedGroup}
@@ -130,8 +130,9 @@ export default function StartPage() {
 
             {/* enlaces > accesos cortos */}
             <LinkGrid
-              size={appState.clock.size}
-              links={appState.links}
+              groups={appState?.groups}
+              size={appState?.clock?.size}
+              links={appState?.links}
               selectedGroup={activeGroup}
               setShowNewLink={setShowNewLink}
               setLinkToEdit={setLinkToEdit}
@@ -143,7 +144,7 @@ export default function StartPage() {
         <div className="w-full h-15- flex items-center justify-center">
           <div className="w-full m-3 flex items-center justify-between">
             {/* Créditos de la imagen de fondo */}
-            {appState.credit && (
+            {appState?.credit && (
               <div className="px-2 py-1.5 rounded-md bg-neutral-950/25 backdrop-blur-sm text-xs text-white">
                 {"Hecho por "}
                 <a
@@ -184,7 +185,7 @@ export default function StartPage() {
       <NewLinkModal
         key={linkToEdit?.id || `new-link-${activeGroup}`}
         selectedGroup={activeGroup}
-        groups={appState.groups}
+        groups={appState?.groups}
         showNewLink={showNewLink}
         setShowNewLink={setShowNewLink}
         linkToEdit={linkToEdit}
