@@ -98,14 +98,11 @@ export default function ManageGroups({
   };
 
   return (
-    <div
-      onClick={() => setShowManageGroup(false)}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs">
       {/* caja */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-125 h-120 mx-auto flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/90 backdrop-blur-md text-white shadow-2xl"
+        className="w-125 mx-auto flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/90 backdrop-blur-md text-white shadow-2xl"
       >
         {/* header */}
         <div className="w-full p-2.5 flex items-center justify-between border-b border-neutral-800">
@@ -122,7 +119,7 @@ export default function ManageGroups({
         </div>
 
         {/* lista de grupos */}
-        <div className="size-full p-2.5 space-y-1.5 overflow-y-auto">
+        <div className="size-full p-2.5 flex flex-col gap-2.5 overflow-y-auto">
           {groups.map((group, index) => {
             const iconFiltered = iconsList.find(
               (icon) => icon.id === group.iconName,
@@ -193,6 +190,8 @@ export default function ManageGroups({
               </div>
             );
           })}
+
+          <div className="w-full h-px bg-neutral-800"></div>
 
           <Button
             full
