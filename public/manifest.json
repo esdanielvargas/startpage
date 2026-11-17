@@ -3,6 +3,11 @@
   "name": "StartPage",
   "version": "1.0.0",
   "description": "Nueva pestaña minimalista y personalizable sin anuncios.",
+  "icons": {
+    "16": "favicon.png",
+    "48": "favicon.png",
+    "128": "favicon.png"
+  },
   "chrome_url_overrides": {
     "newtab": "index.html"
   }
