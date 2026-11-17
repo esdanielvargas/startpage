@@ -6,6 +6,7 @@ const STORAGE_KEY = "startpage";
 
 export default function LinkGrid({
   size,
+  groups = [],
   links = [],
   selectedGroup,
   setShowNewLink,
@@ -69,11 +70,11 @@ export default function LinkGrid({
     e.stopPropagation();
     const existingData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
     const updatedLinks = (existingData.links || []).filter(
-      (l) => l.id !== linkId
+      (l) => l.id !== linkId,
     );
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ ...existingData, links: updatedLinks })
+      JSON.stringify({ ...existingData, links: updatedLinks }),
     );
     window.dispatchEvent(new Event("storage"));
     setOpenMenuId(null);
@@ -137,7 +138,7 @@ export default function LinkGrid({
 
     localStorage.setItem(
       STORAGE_KEY,
-      JSON.stringify({ ...existingData, links: globalLinks })
+      JSON.stringify({ ...existingData, links: globalLinks }),
     );
     window.dispatchEvent(new Event("storage"));
 
@@ -155,17 +156,21 @@ export default function LinkGrid({
       <div className="w-full px-4 grid grid-cols-4 md:grid-cols-8 lg:grid-cols-12 gap-1">
         {currentItems.map((item, index) => {
           if (item.isAddButton) {
+            const isDisabled = !groups || groups.length === 0;
+
             return (
               <button
                 key="add-btn"
                 type="button"
+                disabled={isDisabled}
+                title={isDisabled ? "Crea un grupo primero para agregar enlaces" : "Agregar enlace"}
                 onClick={() => {
                   if (setLinkToEdit) setLinkToEdit(null);
                   setShowNewLink(true);
                 }}
-                className="relative w-full h-full min-w-20 min-h-20 py-5 flex flex-col items-center justify-center gap-1.5 group rounded-xl bg-neutral-950/50 backdrop-blur-sm overflow-hidden text-white cursor-pointer transition-colors"
+                className="relative w-full h-full min-w-20 min-h-20 py-5 flex flex-col items-center justify-center gap-1.5 group rounded-xl bg-neutral-950/50 backdrop-blur-sm overflow-hidden text-white cursor-pointer transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                <div className="absolute inset-0 z-0 bg-neutral-800/50 group-hover:bg-neutral-900/50 transition-colors"></div>
+                <div className="absolute inset-0 z-0 bg-neutral-800/50 group-enabled:group-hover:bg-neutral-900/50 transition-colors"></div>
                 <div className="size-8 z-1 flex items-center justify-center">
                   <Plus size={30} strokeWidth={1.5} />
                 </div>
