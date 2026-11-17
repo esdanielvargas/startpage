@@ -62,13 +62,12 @@ export default function NewGroupModal({
 
   return (
     <div
-      onClick={handleClose}
       className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs"
     >
       {/* caja */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-125 h-120 mx-auto flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/90 backdrop-blur-md text-white shadow-2xl"
+        className="w-125 mx-auto flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/90 backdrop-blur-md text-white shadow-2xl"
       >
         {/* header */}
         <div className="w-full p-2.5 flex items-center justify-between border-b border-neutral-800">
@@ -129,7 +128,7 @@ export default function NewGroupModal({
           <button
             type="button"
             onClick={handleSaveGroup}
-            className="w-full h-10 px-4 rounded-md bg-neutral-50 hover:bg-neutral-300 font-medium text-sm text-black transition-colors cursor-pointer mt-4"
+            className="w-full h-10 px-4 rounded-md bg-neutral-50 hover:bg-neutral-300 font-medium text-sm text-black transition-colors cursor-pointer"
           >
             {groupToEdit ? "Guardar cambios" : "Añadir grupo"}
           </button>
