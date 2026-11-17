@@ -15,6 +15,7 @@ const STORAGE_KEY = "startpage";
 
 const defaultState = {
   background: {
+    showImage: true,
     image: "",
     color: "",
   },
@@ -25,6 +26,8 @@ const defaultState = {
   },
   groups: [],
   links: [],
+  language: "es",
+  faviconSource: "google",
   openInNewTab: true,
   credit: true,
 };
@@ -75,6 +78,7 @@ export default function StartPage() {
   return (
     <>
       <Background
+        showImage={appState?.background?.showImage}
         image={appState?.background?.image}
         color={appState?.background?.color}
       />
@@ -111,6 +115,7 @@ export default function StartPage() {
         >
           {/* Reloj Grande */}
           <ClockView
+            language={appState?.language}
             seconds={appState?.clock?.seconds}
             size={appState?.clock?.size}
             format={appState?.clock?.format}
