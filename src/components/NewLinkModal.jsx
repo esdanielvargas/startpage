@@ -78,10 +78,7 @@ export default function NewLinkModal({
   };
 
   return (
-    <div
-      onClick={handleClose}
-      className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs"
-    >
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs">
       {/* caja */}
       <div
         onClick={(e) => e.stopPropagation()}
