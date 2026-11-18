@@ -10,6 +10,7 @@ import {
   SettingsModal,
 } from "./components";
 import { useEffect, useState } from "react";
+import { t } from "./translations";
 
 const STORAGE_KEY = "startpage";
 
@@ -125,6 +126,7 @@ export default function StartPage() {
           <div className="w-full flex flex-col items-center gap-4">
             {/* menu de navegacion de categorias */}
             <NavMenu
+              language={appState?.language}
               groups={appState?.groups}
               max_groups={max_groups}
               selectedGroup={activeGroup}
@@ -135,6 +137,7 @@ export default function StartPage() {
 
             {/* enlaces > accesos cortos */}
             <LinkGrid
+              language={appState?.language}
               groups={appState?.groups}
               size={appState?.clock?.size}
               links={appState?.links}
@@ -151,7 +154,7 @@ export default function StartPage() {
             {/* Créditos de la imagen de fondo */}
             {appState?.credit && (
               <div className="px-2 py-1.5 rounded-md bg-neutral-950/25 backdrop-blur-sm text-xs text-white">
-                {"Hecho por "}
+                {t(appState?.language, "about.madeBy")}{" "}
                 <a
                   href="https://danielvargas.dev"
                   target="_blank"
@@ -167,11 +170,13 @@ export default function StartPage() {
       </div>
 
       <SettingsModal
+        language={appState?.language}
         showSettings={showSettings}
         setShowSettings={setShowSettings}
       />
 
       <NewGroupModal
+        language={appState?.language}
         key={groupToEdit?.id || "new-group"}
         showNewGroup={showNewGroup}
         setShowNewGroup={setShowNewGroup}
@@ -181,6 +186,7 @@ export default function StartPage() {
       />
 
       <ManageGroups
+        language={appState?.language}
         groups={appState?.groups}
         showManageGroup={showManageGroup}
         setShowManageGroup={setShowManageGroup}
@@ -189,6 +195,7 @@ export default function StartPage() {
       />
 
       <NewLinkModal
+        language={appState?.language}
         key={linkToEdit?.id || `new-link-${activeGroup}`}
         selectedGroup={activeGroup}
         groups={appState?.groups}
