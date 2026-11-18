@@ -1,10 +1,29 @@
 @import "tailwindcss";
 
 :root {
+    --background: #ffffff;
+    --foreground: #171717;
     --font-sans: "Roboto", sans-serif;
     --font-mono: "Space grotesk", sans-serif;
 }
 
 .custom-scrollbar {
-    scrollbar-color: #242424 #171717;
+    scrollbar-color: #cdcdcd #fafafa;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --background: #0a0a0a;
+        --foreground: #ededed;
+    }
+
+    .custom-scrollbar {
+        scrollbar-color: #242424 #171717;
+    }
+}
+
+body {
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    background-color: var(--background);
 }
