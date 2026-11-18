@@ -78,7 +78,7 @@ export default function NavMenu({
     <div className="w-full md:max-w-200 lg:max-w-300 px-4 mx-auto flex items-center justify-center">
       <nav className="w-auto md:max-w-200 p-1 flex items-center justify-start gap-0.5 overflow-hidden overflow-x-auto rounded-full bg-neutral-950/50 backdrop-blur-sm">
         {groups?.length > 0 &&
-          groups?.slice(0, max_groups).map((category, index) => {
+          groups?.slice(0, max_groups).filter((g) => !g.hidden).map((category, index) => {
             const iconFiltered = iconsList.find(
               (icon) => icon.id === category.iconName
             );
