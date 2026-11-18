@@ -82,16 +82,16 @@ export default function NewLinkModal({
       {/* caja */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-125 mx-auto flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/90 backdrop-blur-md text-white shadow-2xl"
+        className="w-125 mx-auto flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-100 dark:bg-neutral-900/90 backdrop-blur-md shadow-2xl"
       >
-        <div className="w-full p-2.5 flex items-center justify-between border-b border-neutral-800">
+        <div className="w-full p-2.5 flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800">
           <div className="w-full pl-2 flex items-center">
             <span className="font-bold text-base">Añadir enlace</span>
           </div>
           <button
             type="button"
             onClick={handleClose}
-            className="size-8 min-w-8 flex items-center justify-center rounded-full text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
+            className="size-8 min-w-8 flex items-center justify-center rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
           >
             <X size={20} strokeWidth={1.5} />
           </button>
@@ -100,13 +100,13 @@ export default function NewLinkModal({
         <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4">
           <FormField
             label="Titulo del sitio web"
-            placeholder="Ej. GitHub"
+            placeholder="ej. GitHub"
             {...register("title", { required: "El nombre es obligatorio" })}
             error={errors.title && errors.title.message}
           />
           <FormField
             label="Enlace del sitio web"
-            placeholder="Ej. https://github.com"
+            placeholder="ej. https://github.com"
             {...register("url", { required: "La URL es obligatoria" })}
             error={errors.url && errors.url.message}
           />
