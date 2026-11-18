@@ -1,11 +1,13 @@
-import { Edit, Menu, Trash, X } from "lucide-react";
+import { Edit, Eye, EyeOff, Menu, Trash, X } from "lucide-react";
 import { useState } from "react";
 import { iconsList } from "../constants";
 import Button from "./Button";
+import { t } from "../translations";
 
 const STORAGE_KEY = "startpage";
 
 export default function ManageGroups({
+  lang,
   groups,
   showManageGroup,
   setShowManageGroup,
@@ -28,6 +30,22 @@ export default function ManageGroups({
       groups: updatedGroups,
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedState));
+    window.dispatchEvent(new Event("storage"));
+  };
+
+  // --- OCULTAR/MOSTRAR GRUPO ---
+  const handleToggleHidden = (groupId) => {
+    const existingData = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    const currentGroups = existingData.groups || groups || [];
+
+    const updatedGroups = currentGroups.map((g) =>
+      g.id === groupId ? { ...g, hidden: !g.hidden } : g,
+    );
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...existingData, groups: updatedGroups }),
+    );
     window.dispatchEvent(new Event("storage"));
   };
 
@@ -107,7 +125,9 @@ export default function ManageGroups({
         {/* header */}
         <div className="w-full p-2.5 flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800">
           <div className="w-full pl-2 flex items-center">
-            <span className="font-bold text-base">Gestionar grupos</span>
+            <span className="font-bold text-base">
+              {t(lang, "manageGroups.title")}
+            </span>
           </div>
           <button
             type="button"
@@ -154,11 +174,30 @@ export default function ManageGroups({
                 </div>
 
                 <div className="flex items-center justify-end shrink-0">
+                  {/* Botón Ocultar/Mostrar */}
+                  <button
+                    type="button"
+                    onClick={() => handleToggleHidden(group.id)}
+                    title={t(
+                      lang,
+                      group.hidden
+                        ? "actions.showGroup"
+                        : "actions.hiddenGroup",
+                    )}
+                    className="size-8 flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
+                  >
+                    {group.hidden ? (
+                      <EyeOff size={16} strokeWidth={1.5} />
+                    ) : (
+                      <Eye size={16} strokeWidth={1.5} />
+                    )}
+                  </button>
+
                   {/* Botón Editar */}
                   <button
                     type="button"
                     onClick={() => handleEditClick(group)}
-                    title="Editar grupo"
+                    title={t(lang, "actions.editGroup")}
                     className="size-8 flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
                   >
                     <Edit size={16} strokeWidth={1.5} />
@@ -168,7 +207,7 @@ export default function ManageGroups({
                   <button
                     type="button"
                     onClick={() => handleDeleteGroup(group.id)}
-                    title="Eliminar grupo"
+                    title={t(lang, "actions.deleteGroup")}
                     className="size-8 flex items-center justify-center text-rose-400 hover:text-rose-500 transition-colors cursor-pointer"
                   >
                     <Trash size={16} strokeWidth={1.5} />
@@ -179,7 +218,7 @@ export default function ManageGroups({
                   {/* Handle para arrastrar */}
                   <button
                     type="button"
-                    title="Arrastrar para reordenar"
+                    title={t(lang, "actions.dragGroup")}
                     onMouseDown={() => setCanDrag(true)}
                     onMouseUp={() => setCanDrag(false)}
                     className="size-8 flex items-center justify-center text-neutral-400 hover:text-black dark:hover:text-white cursor-grab active:cursor-grabbing"
@@ -201,7 +240,7 @@ export default function ManageGroups({
               setShowNewGroup(true);
             }}
           >
-            Agregar nuevo grupo
+            {t(lang, "actions.addNewGroup")}
           </Button>
         </div>
       </div>
