@@ -131,6 +131,7 @@ export default function ManageGroups({
           </div>
           <button
             type="button"
+            title={t(lang, "actions.close")}
             onClick={() => setShowManageGroup(false)}
             className="size-8 min-w-8 flex items-center justify-center rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
           >

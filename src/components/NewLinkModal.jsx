@@ -3,10 +3,12 @@ import { useForm } from "react-hook-form";
 import { formatUrl, generateUniqueId } from "../utils";
 import Button from "./Button";
 import FormField from "./FormField";
+import { t } from "../translations";
 
 const STORAGE_KEY = "startpage";
 
 export default function NewLinkModal({
+  lang,
   showNewLink,
   setShowNewLink,
   selectedGroup,
@@ -86,7 +88,7 @@ export default function NewLinkModal({
       >
         <div className="w-full p-2.5 flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800">
           <div className="w-full pl-2 flex items-center">
-            <span className="font-bold text-base">Añadir enlace</span>
+            <span className="font-bold text-base">{t(lang, "links.title")}</span>
           </div>
           <button
             type="button"
@@ -99,19 +101,21 @@ export default function NewLinkModal({
 
         <form onSubmit={handleSubmit(onSubmit)} className="p-4 space-y-4">
           <FormField
-            label="Titulo del sitio web"
-            placeholder="ej. GitHub"
+            label={t(lang, "links.webTitle.label")}
+            caption={t(lang, "links.webTitle.caption")}
+            placeholder={t(lang, "links.webTitle.placeholder")}
             {...register("title", { required: "El nombre es obligatorio" })}
             error={errors.title && errors.title.message}
           />
           <FormField
-            label="Enlace del sitio web"
-            placeholder="ej. https://github.com"
+            label={t(lang, "links.webLink.label")}
+            caption={t(lang, "links.webLink.caption")}
+            placeholder={t(lang, "links.webLink.placeholder")}
             {...register("url", { required: "La URL es obligatoria" })}
             error={errors.url && errors.url.message}
           />
           <Button type="submit" full>
-            {linkToEdit ? "Guardar cambios" : "Añadir enlace"}
+            {linkToEdit ? "Guardar cambios" : t(lang, "actions.addWebsite")}
           </Button>
         </form>
       </div>

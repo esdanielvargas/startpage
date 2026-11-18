@@ -4,10 +4,12 @@ import { iconsList } from "../constants";
 import { generateUniqueId } from "../utils";
 import FormField from "./FormField";
 import Button from "./Button";
+import { t } from "../translations";
 
 const STORAGE_KEY = "startpage";
 
 export default function NewGroupModal({
+  lang,
   showNewGroup,
   setShowNewGroup,
   setShowManageGroup,
@@ -80,18 +82,20 @@ export default function NewGroupModal({
           <button
             type="button"
             onClick={handleBack}
+            title={t(lang, "actions.back")}
             className="size-8 min-w-8 flex items-center justify-center rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
           >
             <ChevronLeft size={20} strokeWidth={1.5} />
           </button>
           <div className="w-full flex items-center justify-center">
             <span className="font-bold text-base">
-              {groupToEdit ? "Editar grupo" : "Añadir grupo"}
+              {groupToEdit ? t(lang, "group.edit") : t(lang, "group.title")}
             </span>
           </div>
           <button
             type="button"
             onClick={handleClose}
+            title={t(lang, "actions.close")}
             className="size-8 min-w-8 flex items-center justify-center rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
           >
             <X size={20} strokeWidth={1.5} />
@@ -102,7 +106,10 @@ export default function NewGroupModal({
         <div className="p-4 space-y-4 overflow-y-auto">
           {/* Icono */}
           <div className="w-full flex flex-col gap-2">
-            <label className="font-medium text-sm">Icono</label>
+            <FormField
+              label={t(lang, "group.icon.label")}
+              caption={t(lang, "group.icon.caption")}
+            />
             <div className="w-full p-2 grid grid-cols-12 grid-rows-4 gap-px rounded-md bg-neutral-50 dark:bg-neutral-950/95 border border-neutral-200 dark:border-neutral-800">
               {iconsList.map(({ id, Icon, title }) => {
                 if (!Icon) return null;
@@ -128,14 +135,15 @@ export default function NewGroupModal({
 
           {/* Nombre del grupo */}
           <FormField
-            label="Nombre del grupo"
-            placeholder="Nombre del grupo"
+            label={t(lang, "group.name.label")}
+            caption={t(lang, "group.name.caption")}
+            placeholder={t(lang, "group.name.placeholder")}
             value={groupName}
             onChange={(e) => setGroupName(e.target.value)}
           />
 
           <Button full onClick={handleSaveGroup}>
-            {groupToEdit ? "Guardar cambios" : "Agregar grupo"}
+            {groupToEdit ? t(lang, "actions.saveGroup") : t(lang, "actions.addGroup")}
           </Button>
         </div>
       </div>

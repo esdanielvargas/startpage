@@ -220,12 +220,12 @@ export default function SettingsModal({
             {activeTab === "background" && (
               <div className="w-full flex flex-col gap-4">
                 <FormField
-                  label={t(lang, "background.showImage.label")}
-                  caption={t(lang, "background.showImage.caption")}
+                  label={t(lang, "settings.background.showImage.label")}
+                  caption={t(lang, "settings.background.showImage.caption")}
                   boolean
                   value={showImage}
                   onClick={() =>
-                    setValue("background.showImage", !showImage, {
+                    setValue("settings.background.showImage", !showImage, {
                       shouldDirty: true,
                     })
                   }
@@ -234,19 +234,19 @@ export default function SettingsModal({
                 <div className="flex flex-col gap-2">
                   {showImage && (
                     <FormField
-                      label={t(lang, "background.imageUrl.label")}
-                      caption={t(lang, "background.imageUrl.caption")}
+                      label={t(lang, "settings.background.imageUrl.label")}
+                      caption={t(lang, "settings.background.imageUrl.caption")}
                       banner={!!imageUrl}
                       src={imageUrl}
                       link={true}
                       placeholder="https://cdn.domain.com/images/image.webp"
-                      {...register("background.image")}
+                      {...register("settings.background.image")}
                     />
                   )}
 
                   <div className="flex items-center gap-3">
                     <label className="py-2.5 px-3.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs font-medium text-white cursor-pointer transition-colors select-none">
-                      {t(lang, "background.localImage.button")}
+                      {t(lang, "settings.background.localImage.button")}
                       <input
                         type="file"
                         accept="image/*"
@@ -257,8 +257,8 @@ export default function SettingsModal({
 
                     <span className="text-xs text-neutral-400 truncate max-w-48">
                       {imageUrl?.startsWith("data:")
-                        ? t(lang, "background.localImage.loaded")
-                        : t(lang, "background.localImage.empty")}
+                        ? t(lang, "settings.background.localImage.loaded")
+                        : t(lang, "settings.background.localImage.empty")}
                     </span>
                   </div>
                 </div>
@@ -266,8 +266,8 @@ export default function SettingsModal({
                 {/* Selector de color sólido */}
                 <div className="flex flex-col gap-2 pt-4 border-t border-neutral-200 dark:border-neutral-800">
                   <FormField
-                    label={t(lang, "background.baseColor.label")}
-                    caption={t(lang, "background.baseColor.caption")}
+                    label={t(lang, "settings.background.baseColor.label")}
+                    caption={t(lang, "settings.background.baseColor.caption")}
                   />
                   <div className="grid grid-cols-10 gap-2 pt-1">
                     {PRESET_COLORS.map((preset) => (
@@ -276,7 +276,7 @@ export default function SettingsModal({
                         type="button"
                         title={preset.name}
                         onClick={() =>
-                          setValue("background.color", preset.value, {
+                          setValue("settings.background.color", preset.value, {
                             shouldDirty: true,
                           })
                         }
@@ -292,7 +292,7 @@ export default function SettingsModal({
                       type="color"
                       value={bgColor || "#737373"}
                       onChange={(e) =>
-                        setValue("background.color", e.target.value, {
+                        setValue("settings.background.color", e.target.value, {
                           shouldDirty: true,
                         })
                       }
@@ -309,44 +309,44 @@ export default function SettingsModal({
             {activeTab === "clock" && (
               <div className="w-full flex flex-col gap-4">
                 <FormField
-                  label={t(lang, "clock.showSeconds.label")}
-                  caption={t(lang, "clock.showSeconds.caption")}
+                  label={t(lang, "settings.clock.showSeconds.label")}
+                  caption={t(lang, "settings.clock.showSeconds.caption")}
                   boolean
                   value={clockSeconds}
                   onClick={() =>
-                    setValue("clock.seconds", !clockSeconds, {
+                    setValue("settings.clock.seconds", !clockSeconds, {
                       shouldDirty: true,
                     })
                   }
                 />
                 <FormField
-                  label={t(lang, "clock.size.label")}
-                  caption={t(lang, "clock.size.caption")}
+                  label={t(lang, "settings.clock.size.label")}
+                  caption={t(lang, "settings.clock.size.caption")}
                   select
                   options={[
                     {
                       value: "small",
-                      label: t(lang, "clock.size.options.small"),
+                      label: t(lang, "settings.clock.size.options.small"),
                     },
                     {
                       value: "large",
-                      label: t(lang, "clock.size.options.large"),
+                      label: t(lang, "settings.clock.size.options.large"),
                     },
                   ]}
                   {...register("clock.size")}
                 />
                 <FormField
-                  label={t(lang, "clock.format.label")}
-                  caption={t(lang, "clock.format.caption")}
+                  label={t(lang, "settings.clock.format.label")}
+                  caption={t(lang, "settings.clock.format.caption")}
                   select
                   options={[
                     {
                       value: "h12",
-                      label: t(lang, "clock.format.options.h12"),
+                      label: t(lang, "settings.clock.format.options.h12"),
                     },
                     {
                       value: "h24",
-                      label: t(lang, "clock.format.options.h24"),
+                      label: t(lang, "settings.clock.format.options.h24"),
                     },
                   ]}
                   {...register("clock.format")}
@@ -358,8 +358,8 @@ export default function SettingsModal({
             {activeTab === "links" && (
               <div className="w-full flex flex-col gap-4">
                 <FormField
-                  label={t(lang, "links.openInNewTab.label")}
-                  caption={t(lang, "links.openInNewTab.caption")}
+                  label={t(lang, "settings.links.openInNewTab.label")}
+                  caption={t(lang, "settings.links.openInNewTab.caption")}
                   boolean
                   value={openInNewTab}
                   onClick={() =>
@@ -369,28 +369,28 @@ export default function SettingsModal({
                   }
                 />
                 <FormField
-                  label={t(lang, "links.faviconProvider.label")}
-                  caption={t(lang, "links.faviconProvider.caption")}
+                  label={t(lang, "settings.links.faviconProvider.label")}
+                  caption={t(lang, "settings.links.faviconProvider.caption")}
                   select
                   options={[
                     {
                       value: "google",
-                      label: t(lang, "links.faviconProvider.options.google"),
+                      label: t(lang, "settings.links.faviconProvider.options.google"),
                     },
                     {
                       value: "duckduckgo",
                       label: t(
                         lang,
-                        "links.faviconProvider.options.duckduckgo",
+                        "settings.links.faviconProvider.options.duckduckgo",
                       ),
                     },
                     {
                       value: "iconhorse",
-                      label: t(lang, "links.faviconProvider.options.iconhorse"),
+                      label: t(lang, "settings.links.faviconProvider.options.iconhorse"),
                     },
                     {
                       value: "yandex",
-                      label: t(lang, "links.faviconProvider.options.yandex"),
+                      label: t(lang, "settings.links.faviconProvider.options.yandex"),
                     },
                   ]}
                   {...register("faviconSource")}
@@ -402,8 +402,8 @@ export default function SettingsModal({
             {activeTab === "general" && (
               <div className="w-full flex flex-col gap-4">
                 <FormField
-                  label={t(lang, "general.language.label")}
-                  caption={t(lang, "general.language.caption")}
+                  label={t(lang, "settings.general.language.label")}
+                  caption={t(lang, "settings.general.language.caption")}
                   select
                   options={[
                     { value: "es", label: "Español" },
@@ -413,10 +413,10 @@ export default function SettingsModal({
                 />
                 <div className="flex flex-col gap-2 pt-3 border-t border-neutral-200 dark:border-neutral-800">
                   <span className="text-sm font-medium">
-                    {t(lang, "general.backup.label")}
+                    {t(lang, "settings.general.backup.label")}
                   </span>
                   <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    {t(lang, "general.backup.caption")}
+                    {t(lang, "settings.general.backup.caption")}
                   </p>
                   <div className="flex items-center gap-2 pt-1">
                     <button
@@ -424,11 +424,11 @@ export default function SettingsModal({
                       onClick={handleExportData}
                       className="px-3.5 py-2 rounded-lg bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-xs font-medium cursor-pointer transition-colors"
                     >
-                      {t(lang, "general.backup.exportBtn")}
+                      {t(lang, "settings.general.backup.exportBtn")}
                     </button>
 
                     <label className="px-3.5 py-2 rounded-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black hover:opacity-90 text-xs font-medium cursor-pointer transition-opacity">
-                      {t(lang, "general.backup.importBtn")}
+                      {t(lang, "settings.general.backup.importBtn")}
                       <input
                         type="file"
                         accept="application/json"
@@ -445,13 +445,13 @@ export default function SettingsModal({
             {activeTab === "about" && (
               <div className="w-full flex flex-col gap-4">
                 <FormField
-                  label={t(lang, "about.version")}
+                  label={t(lang, "settings.about.version")}
                   readOnly
                   placeholder="v1.1.0"
                 />
                 <FormField
-                  label={t(lang, "about.credit.label")}
-                  caption={t(lang, "about.credit.caption")}
+                  label={t(lang, "settings.about.credit.label")}
+                  caption={t(lang, "settings.about.credit.caption")}
                   boolean
                   value={credit}
                   onClick={() =>
