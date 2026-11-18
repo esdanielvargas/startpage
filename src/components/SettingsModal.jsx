@@ -10,7 +10,7 @@ const defaultSettings = {
   background: { showImage: true, image: "", color: "#737373" },
   clock: { seconds: true, size: "large", format: "h24" },
   faviconSource: "google",
-  language: "es",
+  lang: "en",
   openInNewTab: true,
   credit: true,
 };
@@ -48,13 +48,11 @@ const getInitialSettings = () => {
 };
 
 export default function SettingsModal({
-  language,
+  lang,
   showSettings,
   setShowSettings,
 }) {
   const [activeTab, setActiveTab] = useState("background");
-
-  const lang = language;
 
   const { register, watch, setValue, reset } = useForm({
     defaultValues: getInitialSettings(),
@@ -169,7 +167,8 @@ export default function SettingsModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs">
       {/* box */}
-      <div5        onClick={(e) => e.stopPropagation()}
+      <div
+        onClick={(e) => e.stopPropagation()}
         className="w-170 h-120 mx-auto flex overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950/90 backdrop-blur-md text-black dark:text-white shadow-2xl"
       >
         {/* sidebar */}
@@ -341,8 +340,14 @@ export default function SettingsModal({
                   caption={t(lang, "clock.format.caption")}
                   select
                   options={[
-                    { value: "h12", label: t(lang, "clock.format.options.h12") },
-                    { value: "h24", label: t(lang, "clock.format.options.h24") },
+                    {
+                      value: "h12",
+                      label: t(lang, "clock.format.options.h12"),
+                    },
+                    {
+                      value: "h24",
+                      label: t(lang, "clock.format.options.h24"),
+                    },
                   ]}
                   {...register("clock.format")}
                 />
@@ -368,10 +373,25 @@ export default function SettingsModal({
                   caption={t(lang, "links.faviconProvider.caption")}
                   select
                   options={[
-                    { value: "google", label: t(lang, "links.faviconProvider.options.google") },
-                    { value: "duckduckgo", label: t(lang, "links.faviconProvider.options.duckduckgo") },
-                    { value: "iconhorse", label: t(lang, "links.faviconProvider.options.iconhorse") },
-                    { value: "yandex", label: t(lang, "links.faviconProvider.options.yandex") },
+                    {
+                      value: "google",
+                      label: t(lang, "links.faviconProvider.options.google"),
+                    },
+                    {
+                      value: "duckduckgo",
+                      label: t(
+                        lang,
+                        "links.faviconProvider.options.duckduckgo",
+                      ),
+                    },
+                    {
+                      value: "iconhorse",
+                      label: t(lang, "links.faviconProvider.options.iconhorse"),
+                    },
+                    {
+                      value: "yandex",
+                      label: t(lang, "links.faviconProvider.options.yandex"),
+                    },
                   ]}
                   {...register("faviconSource")}
                 />
@@ -389,7 +409,7 @@ export default function SettingsModal({
                     { value: "es", label: "Español" },
                     { value: "en", label: "English" },
                   ]}
-                  {...register("language")}
+                  {...register("lang")}
                 />
                 <div className="flex flex-col gap-2 pt-3 border-t border-neutral-200 dark:border-neutral-800">
                   <span className="text-sm font-medium">
@@ -442,7 +462,7 @@ export default function SettingsModal({
             )}
           </div>
         </div>
-      </div5>
+      </div>
     </div>
   );
 }
