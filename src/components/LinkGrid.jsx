@@ -1,10 +1,12 @@
 import { Edit, MoreVertical, Plus, Trash } from "lucide-react";
 import { useEffect, useState } from "react";
 import { formatUrl, getFavicon } from "../utils";
+import { t } from "../translations";
 
 const STORAGE_KEY = "startpage";
 
 export default function LinkGrid({
+  lang,
   size,
   groups = [],
   links = [],
@@ -163,7 +165,7 @@ export default function LinkGrid({
                 key="add-btn"
                 type="button"
                 disabled={isDisabled}
-                title={isDisabled ? "Crea un grupo primero para agregar enlaces" : "Agregar enlace"}
+                title={isDisabled ? t(lang, "actions.addLinkDisabled") : t(lang, "actions.addLink")}
                 onClick={() => {
                   if (setLinkToEdit) setLinkToEdit(null);
                   setShowNewLink(true);
@@ -174,7 +176,7 @@ export default function LinkGrid({
                 <div className="size-8 z-1 flex items-center justify-center">
                   <Plus size={30} strokeWidth={1.5} />
                 </div>
-                <span className="z-1 text-xs">Agregar</span>
+                <span className="z-1 text-xs">{t(lang, "actions.add")}</span>
               </button>
             );
           }
@@ -232,12 +234,12 @@ export default function LinkGrid({
                   e.stopPropagation();
                   setOpenMenuId(isMenuOpen ? null : item.id);
                 }}
-                className={`absolute top-1.5 right-1.5 size-6 flex items-center justify-center rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800/90 transition-opacity cursor-pointer ${
+                className={`absolute top-1.5 right-1.5 h-6 flex items-center justify-center rounded-md text-neutral-400 hover:text-white hover:bg-neutral-800/90 transition-opacity cursor-pointer ${
                   isMenuOpen
                     ? "opacity-100 bg-neutral-800/90 text-white"
                     : "opacity-0 group-hover:opacity-100"
                 }`}
-                title="Opciones"
+                title={t(lang, "actions.options")}
               >
                 <MoreVertical size={14} />
               </button>
@@ -254,7 +256,7 @@ export default function LinkGrid({
                     className="w-full px-2.5 py-1.5 flex items-center gap-2 text-neutral-200 hover:bg-neutral-800 transition-colors cursor-pointer"
                   >
                     <Edit size={13} />
-                    <span>Editar</span>
+                    <span>{t(lang, "actions.edit")}</span>
                   </button>
                   <button
                     type="button"
@@ -262,7 +264,7 @@ export default function LinkGrid({
                     className="w-full px-2.5 py-1.5 flex items-center gap-2 text-rose-400 hover:bg-neutral-800 transition-colors cursor-pointer"
                   >
                     <Trash size={13} />
-                    <span>Eliminar</span>
+                    <span>{t(lang, "actions.delete")}</span>
                   </button>
                 </div>
               )}
