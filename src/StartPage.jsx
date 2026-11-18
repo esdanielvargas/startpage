@@ -27,7 +27,7 @@ const defaultState = {
   },
   groups: [],
   links: [],
-  language: "es",
+  lang: "en",
   faviconSource: "google",
   openInNewTab: true,
   credit: true,
@@ -94,6 +94,7 @@ export default function StartPage() {
             {/* Options Button */}
             <button
               type="button"
+              title={t(appState.lang, "actions.settings")}
               onClick={() => setShowSettings(true)}
               className="size-8.5 fixed z-20 top-3 right-3 flex items-center justify-center rounded-full hover:bg-neutral-400/50 hover:dark:bg-neutral-950/25 text-white cursor-pointer group"
             >
@@ -116,7 +117,7 @@ export default function StartPage() {
         >
           {/* Reloj Grande */}
           <ClockView
-            language={appState?.language}
+            lang={appState?.lang}
             seconds={appState?.clock?.seconds}
             size={appState?.clock?.size}
             format={appState?.clock?.format}
@@ -126,7 +127,7 @@ export default function StartPage() {
           <div className="w-full flex flex-col items-center gap-4">
             {/* menu de navegacion de categorias */}
             <NavMenu
-              language={appState?.language}
+              lang={appState?.lang}
               groups={appState?.groups}
               max_groups={max_groups}
               selectedGroup={activeGroup}
@@ -137,7 +138,7 @@ export default function StartPage() {
 
             {/* enlaces > accesos cortos */}
             <LinkGrid
-              language={appState?.language}
+              lang={appState?.lang}
               groups={appState?.groups}
               size={appState?.clock?.size}
               links={appState?.links}
@@ -154,7 +155,7 @@ export default function StartPage() {
             {/* Créditos de la imagen de fondo */}
             {appState?.credit && (
               <div className="px-2 py-1.5 rounded-md bg-neutral-950/25 backdrop-blur-sm text-xs text-white">
-                {t(appState?.language, "about.madeBy")}{" "}
+                {t(appState?.lang, "settings.about.madeBy")}{" "}
                 <a
                   href="https://danielvargas.dev"
                   target="_blank"
@@ -170,13 +171,13 @@ export default function StartPage() {
       </div>
 
       <SettingsModal
-        language={appState?.language}
+        lang={appState?.lang}
         showSettings={showSettings}
         setShowSettings={setShowSettings}
       />
 
       <NewGroupModal
-        language={appState?.language}
+        lang={appState?.lang}
         key={groupToEdit?.id || "new-group"}
         showNewGroup={showNewGroup}
         setShowNewGroup={setShowNewGroup}
@@ -186,7 +187,7 @@ export default function StartPage() {
       />
 
       <ManageGroups
-        language={appState?.language}
+        lang={appState?.lang}
         groups={appState?.groups}
         showManageGroup={showManageGroup}
         setShowManageGroup={setShowManageGroup}
@@ -195,7 +196,7 @@ export default function StartPage() {
       />
 
       <NewLinkModal
-        language={appState?.language}
+        lang={appState?.lang}
         key={linkToEdit?.id || `new-link-${activeGroup}`}
         selectedGroup={activeGroup}
         groups={appState?.groups}
