@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-export function useClock({ format = "h24", showSeconds = true, language = "es" } = {}) {
+export function useClock({ format = "h24", showSeconds = true, lang = "es" } = {}) {
   const [time, setTime] = useState(new Date());
 
   useEffect(() => {
@@ -23,9 +23,9 @@ export function useClock({ format = "h24", showSeconds = true, language = "es" }
     timeOptions.second = "2-digit";
   }
 
-  const formattedTime = time.toLocaleTimeString(language, timeOptions);
+  const formattedTime = time.toLocaleTimeString(lang, timeOptions);
 
-  const formattedDate = time.toLocaleDateString(language, {
+  const formattedDate = time.toLocaleDateString(lang, {
     weekday: "long",
     day: "2-digit",
     month: "long",
