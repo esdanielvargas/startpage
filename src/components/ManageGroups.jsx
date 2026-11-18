@@ -102,17 +102,17 @@ export default function ManageGroups({
       {/* caja */}
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-125 mx-auto flex flex-col overflow-hidden rounded-xl border border-neutral-800 bg-neutral-900/90 backdrop-blur-md text-white shadow-2xl"
+        className="w-125 mx-auto flex flex-col overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900/90 backdrop-blur-md shadow-2xl"
       >
         {/* header */}
-        <div className="w-full p-2.5 flex items-center justify-between border-b border-neutral-800">
+        <div className="w-full p-2.5 flex items-center justify-between border-b border-neutral-200 dark:border-neutral-800">
           <div className="w-full pl-2 flex items-center">
             <span className="font-bold text-base">Gestionar grupos</span>
           </div>
           <button
             type="button"
             onClick={() => setShowManageGroup(false)}
-            className="size-8 min-w-8 flex items-center justify-center rounded-full text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors cursor-pointer"
+            className="size-8 min-w-8 flex items-center justify-center rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
           >
             <X size={20} strokeWidth={1.5} />
           </button>
@@ -142,8 +142,8 @@ export default function ManageGroups({
                 onDragEnd={resetDragState}
                 className={`relative w-full h-10 pl-2.5 flex items-center justify-between rounded-lg transition-colors select-none ${
                   isDragging
-                    ? "opacity-40 bg-neutral-800"
-                    : "hover:bg-neutral-800/75"
+                    ? "opacity-40 bg-neutral-200 dark:bg-neutral-800"
+                    : "hover:bg-neutral-200/75 dark:hover:bg-neutral-800/75"
                 } ${isOverBefore ? "border-t-2 border-sky-500" : ""} ${
                   isOverAfter ? "border-b-2 border-sky-500" : ""
                 }`}
@@ -159,7 +159,7 @@ export default function ManageGroups({
                     type="button"
                     onClick={() => handleEditClick(group)}
                     title="Editar grupo"
-                    className="size-8 flex items-center justify-center text-neutral-400 hover:text-white transition-colors cursor-pointer"
+                    className="size-8 flex items-center justify-center text-neutral-500 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
                   >
                     <Edit size={16} strokeWidth={1.5} />
                   </button>
@@ -169,12 +169,12 @@ export default function ManageGroups({
                     type="button"
                     onClick={() => handleDeleteGroup(group.id)}
                     title="Eliminar grupo"
-                    className="size-8 flex items-center justify-center text-rose-500 hover:text-rose-400 transition-colors cursor-pointer"
+                    className="size-8 flex items-center justify-center text-rose-400 hover:text-rose-500 transition-colors cursor-pointer"
                   >
                     <Trash size={16} strokeWidth={1.5} />
                   </button>
 
-                  <div className="w-px h-5 bg-neutral-800 mx-1"></div>
+                  <div className="w-px h-5 mx-1 bg-neutral-200 dark:bg-neutral-800"></div>
 
                   {/* Handle para arrastrar */}
                   <button
@@ -182,7 +182,7 @@ export default function ManageGroups({
                     title="Arrastrar para reordenar"
                     onMouseDown={() => setCanDrag(true)}
                     onMouseUp={() => setCanDrag(false)}
-                    className="size-8 flex items-center justify-center text-neutral-400 hover:text-white cursor-grab active:cursor-grabbing"
+                    className="size-8 flex items-center justify-center text-neutral-400 hover:text-black dark:hover:text-white cursor-grab active:cursor-grabbing"
                   >
                     <Menu size={18} strokeWidth={1.5} />
                   </button>
@@ -191,7 +191,7 @@ export default function ManageGroups({
             );
           })}
 
-          <div className="w-full h-px bg-neutral-800"></div>
+          <div className="w-full h-px bg-neutral-200 dark:bg-neutral-800"></div>
 
           <Button
             full
