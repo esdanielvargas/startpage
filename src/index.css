@@ -4,3 +4,7 @@
     --font-sans: "Roboto", sans-serif;
     --font-mono: "Space grotesk", sans-serif;
 }
+
+.custom-scrollbar {
+    scrollbar-color: #242424 #171717;
+}
