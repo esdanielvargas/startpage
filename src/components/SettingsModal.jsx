@@ -427,7 +427,7 @@ export default function SettingsModal({
                 <FormField
                   label={t(lang, "about.version")}
                   readOnly
-                  placeholder="v1.0.0"
+                  placeholder="v1.1.0"
                 />
                 <FormField
                   label={t(lang, "about.credit.label")}
