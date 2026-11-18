@@ -1,10 +1,12 @@
 import { Plus, Settings2 } from "lucide-react";
 import { useState } from "react";
 import { iconsList } from "../constants";
+import { t } from "../translations";
 
 const STORAGE_KEY = "startpage";
 
 export default function NavMenu({
+  lang,
   groups = [],
   max_groups,
   selectedGroup,
@@ -118,7 +120,7 @@ export default function NavMenu({
 
         <button
           type="button"
-          title="Gestionar o agregar grupos"
+          title={groups?.length > 0 ? t(lang, "actions.manageGroups") : t(lang, "actions.addGroup")}
           onClick={() => {
             if (groups?.length > 0) {
               setShowManageGroup(true);
