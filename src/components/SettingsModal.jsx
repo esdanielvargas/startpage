@@ -2,6 +2,7 @@ import { X } from "lucide-react";
 import FormField from "./FormField";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { t } from "../translations";
 
 const STORAGE_KEY = "startpage";
 
@@ -46,10 +47,16 @@ const getInitialSettings = () => {
   }
 };
 
-export default function SettingsModal({ showSettings, setShowSettings }) {
+export default function SettingsModal({
+  language,
+  showSettings,
+  setShowSettings,
+}) {
   const [activeTab, setActiveTab] = useState("background");
 
-  const { register, watch, setValue } = useForm({
+  const lang = language;
+
+  const { register, watch, setValue, reset } = useForm({
     defaultValues: getInitialSettings(),
   });
 
@@ -104,11 +111,11 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
   if (!showSettings) return null;
 
   const tabs = [
-    { id: "background", title: "Fondo de pantalla" },
-    { id: "clock", title: "Reloj digital" },
-    { id: "links", title: "Accesos directos" },
-    { id: "general", title: "General" },
-    { id: "about", title: "Acerca de" },
+    { id: "background", title: t(lang, "settings.tabs.background") },
+    { id: "clock", title: t(lang, "settings.tabs.clock") },
+    { id: "links", title: t(lang, "settings.tabs.links") },
+    { id: "general", title: t(lang, "settings.tabs.general") },
+    { id: "about", title: t(lang, "settings.tabs.about") },
   ];
 
   const currentTabTitle = tabs.find((t) => t.id === activeTab)?.title;
@@ -118,18 +125,57 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
     setShowSettings(false);
   };
 
+  // EXPORTAR: Descarga un archivo startpage-backup-YYYY-MM-DD.json
+  const handleExportData = () => {
+    const raw = localStorage.getItem(STORAGE_KEY) || "{}";
+    const blob = new Blob([raw], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `startpage-backup-${new Date().toISOString().slice(0, 10)}.json`;
+    a.click();
+
+    URL.revokeObjectURL(url);
+  };
+
+  // IMPORTAR: Lee el .json, valida su estructura y actualiza toda la app
+  const handleImportData = (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      try {
+        const parsed = JSON.parse(event.target.result);
+        if (typeof parsed !== "object" || parsed === null) {
+          throw new Error("Formato inválido");
+        }
+
+        const merged = { ...defaultSettings, ...parsed };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
+        window.dispatchEvent(new Event("storage"));
+        reset(merged); // Actualiza los inputs del modal al instante
+        alert(t(lang, "general.backup.importSuccess"));
+      } catch {
+        alert(t(lang, "general.backup.importError"));
+      } finally {
+        e.target.value = ""; // Permite volver a seleccionar el mismo archivo
+      }
+    };
+    reader.readAsText(file);
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-neutral-950/60 backdrop-blur-xs">
       {/* box */}
-      <div
-        onClick={(e) => e.stopPropagation()}
-        className="w-170 h-120 mx-auto flex overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-950/90 backdrop-blur-md text-black dark:text-white shadow-2xl"
+      <div5        onClick={(e) => e.stopPropagation()}
+        className="w-170 h-120 mx-auto flex overflow-hidden rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-950/90 backdrop-blur-md text-black dark:text-white shadow-2xl"
       >
         {/* sidebar */}
-        <div className="w-56 min-w-56 p-2.5 flex flex-col border-r border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900/50">
+        <div className="w-56 min-w-56 p-2.5 flex flex-col border-r border-neutral-200 dark:border-neutral-800 bg-neutral-200/25 dark:bg-neutral-900/50">
           <div className="w-full pl-2 my-2 flex items-center justify-between pr-2">
-            <span className="font-medium">Ajustes</span>
-            <span className="text-[11px] text-neutral-400">Auto-guardado</span>
+            <span className="font-medium">{t(lang, "settings.title")}</span>
           </div>
           <div className="w-full py-1 flex flex-col gap-px">
             {tabs.map((tab) => (
@@ -162,6 +208,7 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
             <button
               type="button"
               onClick={handleClose}
+              title={t(lang, "actions.close")}
               className="size-8 -mr-1.5 flex items-center justify-center rounded-full hover:bg-neutral-200 dark:hover:bg-neutral-800 text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors cursor-pointer"
             >
               <X size={20} strokeWidth={1.5} />
@@ -169,13 +216,13 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
           </div>
 
           {/* Contenido de ajustes */}
-          <div className="w-full h-full p-4 flex flex-col gap-4 overflow-y-auto">
+          <div className="w-full h-full p-4 flex flex-col gap-4 overflow-y-auto custom-scrollbar">
             {/* background */}
             {activeTab === "background" && (
               <div className="w-full flex flex-col gap-4">
                 <FormField
-                  label="Mostrar imagen de fondo"
-                  caption="Desactívalo para usar únicamente un color sólido."
+                  label={t(lang, "background.showImage.label")}
+                  caption={t(lang, "background.showImage.caption")}
                   boolean
                   value={showImage}
                   onClick={() =>
@@ -185,39 +232,44 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
                   }
                 />
 
-                {showImage && (
-                  <FormField
-                    label="Enlace de la imagen de fondo"
-                    caption="Ingresa el enlace de la imagen de fondo o la ruta local."
-                    banner={!!imageUrl}
-                    src={imageUrl}
-                    link={true}
-                    placeholder="https://cdn.domain.com/images/image.webp"
-                    {...register("background.image")}
-                  />
-                )}
+                <div className="flex flex-col gap-2">
+                  {showImage && (
+                    <FormField
+                      label={t(lang, "background.imageUrl.label")}
+                      caption={t(lang, "background.imageUrl.caption")}
+                      banner={!!imageUrl}
+                      src={imageUrl}
+                      link={true}
+                      placeholder="https://cdn.domain.com/images/image.webp"
+                      {...register("background.image")}
+                    />
+                  )}
 
-                <div className="flex flex-col gap-1.5">
-                  <label className="text-sm font-medium">
-                    O subir desde tu equipo
-                  </label>
-                  <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleLocalImage}
-                    className="text-xs file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-medium file:bg-neutral-800 file:text-white hover:file:bg-neutral-700 cursor-pointer"
-                  />
+                  <div className="flex items-center gap-3">
+                    <label className="py-2.5 px-3.5 rounded-lg bg-neutral-800 hover:bg-neutral-700 text-xs font-medium text-white cursor-pointer transition-colors select-none">
+                      {t(lang, "background.localImage.button")}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleLocalImage}
+                        className="hidden"
+                      />
+                    </label>
+
+                    <span className="text-xs text-neutral-400 truncate max-w-48">
+                      {imageUrl?.startsWith("data:")
+                        ? t(lang, "background.localImage.loaded")
+                        : t(lang, "background.localImage.empty")}
+                    </span>
+                  </div>
                 </div>
 
                 {/* Selector de color sólido */}
                 <div className="flex flex-col gap-2 pt-4 border-t border-neutral-200 dark:border-neutral-800">
-                  <label className="text-sm font-medium">
-                    Color de fondo base
-                  </label>
-                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
-                    Se muestra cuando la imagen está desactivada o mientras
-                    carga.
-                  </p>
+                  <FormField
+                    label={t(lang, "background.baseColor.label")}
+                    caption={t(lang, "background.baseColor.caption")}
+                  />
                   <div className="grid grid-cols-10 gap-2 pt-1">
                     {PRESET_COLORS.map((preset) => (
                       <button
@@ -231,7 +283,7 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
                         }
                         className={`size-7 rounded-full border transition-transform cursor-pointer ${
                           bgColor === preset.value
-                            ? "scale-110 border-white ring-2 ring-blue-500"
+                            ? "scale-110 border-transparent ring-2 ring-sky-500"
                             : "border-neutral-600 hover:scale-105"
                         }`}
                         style={{ backgroundColor: preset.value }}
@@ -258,8 +310,8 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
             {activeTab === "clock" && (
               <div className="w-full flex flex-col gap-4">
                 <FormField
-                  label="Mostrar segundos"
-                  caption="Al activar esta opción se mostraran los segundos en el reloj."
+                  label={t(lang, "clock.showSeconds.label")}
+                  caption={t(lang, "clock.showSeconds.caption")}
                   boolean
                   value={clockSeconds}
                   onClick={() =>
@@ -269,22 +321,28 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
                   }
                 />
                 <FormField
-                  label="Tamaño del reloj"
-                  caption="Elige el tamaño del reloj preferido."
+                  label={t(lang, "clock.size.label")}
+                  caption={t(lang, "clock.size.caption")}
                   select
                   options={[
-                    { value: "small", label: "Pequeño" },
-                    { value: "large", label: "Grande" },
+                    {
+                      value: "small",
+                      label: t(lang, "clock.size.options.small"),
+                    },
+                    {
+                      value: "large",
+                      label: t(lang, "clock.size.options.large"),
+                    },
                   ]}
                   {...register("clock.size")}
                 />
                 <FormField
-                  label="Formato del reloj"
-                  caption="Elige el formato del reloj preferido."
+                  label={t(lang, "clock.format.label")}
+                  caption={t(lang, "clock.format.caption")}
                   select
                   options={[
-                    { value: "h12", label: "Reloj de 12 horas" },
-                    { value: "h24", label: "Reloj de 24 horas" },
+                    { value: "h12", label: t(lang, "clock.format.options.h12") },
+                    { value: "h24", label: t(lang, "clock.format.options.h24") },
                   ]}
                   {...register("clock.format")}
                 />
@@ -295,8 +353,8 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
             {activeTab === "links" && (
               <div className="w-full flex flex-col gap-4">
                 <FormField
-                  label="Abrir en nueva pestaña"
-                  caption="Al activar esta opción los enlaces se abrirán en una nueva pestaña."
+                  label={t(lang, "links.openInNewTab.label")}
+                  caption={t(lang, "links.openInNewTab.caption")}
                   boolean
                   value={openInNewTab}
                   onClick={() =>
@@ -306,14 +364,14 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
                   }
                 />
                 <FormField
-                  label="Proveedor de iconos (Favicons)"
-                  caption="Cambia la fuente si algún sitio web no muestra su logo."
+                  label={t(lang, "links.faviconProvider.label")}
+                  caption={t(lang, "links.faviconProvider.caption")}
                   select
                   options={[
-                    { value: "google", label: "Google (Recomendado)" },
-                    { value: "duckduckgo", label: "DuckDuckGo" },
-                    { value: "iconhorse", label: "Icon Horse (Alta calidad)" },
-                    { value: "yandex", label: "Yandex" },
+                    { value: "google", label: t(lang, "links.faviconProvider.options.google") },
+                    { value: "duckduckgo", label: t(lang, "links.faviconProvider.options.duckduckgo") },
+                    { value: "iconhorse", label: t(lang, "links.faviconProvider.options.iconhorse") },
+                    { value: "yandex", label: t(lang, "links.faviconProvider.options.yandex") },
                   ]}
                   {...register("faviconSource")}
                 />
@@ -324,8 +382,8 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
             {activeTab === "general" && (
               <div className="w-full flex flex-col gap-4">
                 <FormField
-                  label="Idioma / Language"
-                  caption="Selecciona el idioma de la interfaz."
+                  label={t(lang, "general.language.label")}
+                  caption={t(lang, "general.language.caption")}
                   select
                   options={[
                     { value: "es", label: "Español" },
@@ -333,16 +391,47 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
                   ]}
                   {...register("language")}
                 />
+                <div className="flex flex-col gap-2 pt-3 border-t border-neutral-200 dark:border-neutral-800">
+                  <span className="text-sm font-medium">
+                    {t(lang, "general.backup.label")}
+                  </span>
+                  <p className="text-xs text-neutral-500 dark:text-neutral-400">
+                    {t(lang, "general.backup.caption")}
+                  </p>
+                  <div className="flex items-center gap-2 pt-1">
+                    <button
+                      type="button"
+                      onClick={handleExportData}
+                      className="px-3.5 py-2 rounded-lg bg-neutral-200 dark:bg-neutral-800 hover:bg-neutral-300 dark:hover:bg-neutral-700 text-xs font-medium cursor-pointer transition-colors"
+                    >
+                      {t(lang, "general.backup.exportBtn")}
+                    </button>
+
+                    <label className="px-3.5 py-2 rounded-lg bg-neutral-900 dark:bg-neutral-100 text-white dark:text-black hover:opacity-90 text-xs font-medium cursor-pointer transition-opacity">
+                      {t(lang, "general.backup.importBtn")}
+                      <input
+                        type="file"
+                        accept="application/json"
+                        onChange={handleImportData}
+                        className="hidden"
+                      />
+                    </label>
+                  </div>
+                </div>
               </div>
             )}
 
             {/* about */}
             {activeTab === "about" && (
               <div className="w-full flex flex-col gap-4">
-                <FormField label="Versión" readOnly placeholder="v1.0.0" />
                 <FormField
-                  label="Mostrar crédito"
-                  caption="Si desactivas esto no pasa nada, solo es para que sepas quién es el creador de esta extensión."
+                  label={t(lang, "about.version")}
+                  readOnly
+                  placeholder="v1.0.0"
+                />
+                <FormField
+                  label={t(lang, "about.credit.label")}
+                  caption={t(lang, "about.credit.caption")}
                   boolean
                   value={credit}
                   onClick={() =>
@@ -353,7 +442,7 @@ export default function SettingsModal({ showSettings, setShowSettings }) {
             )}
           </div>
         </div>
-      </div>
+      </div5>
     </div>
   );
 }
